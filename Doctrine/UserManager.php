@@ -65,9 +65,10 @@ class UserManager extends BaseUserManager
      */
     public function findUserBy(array $criteria)
     {
-        $classes = $this->userDiscriminator->getClasses();
-
-        foreach ($classes as $class) {
+        $discriminator = $this->userDiscriminator;
+        # If the discriminator class is set
+        if($discriminator->getClass()) {
+            $class=$discriminator->getClass();
             $repo = $this->om->getRepository($class);
 
             if (!$repo) {
@@ -82,9 +83,30 @@ class UserManager extends BaseUserManager
             }
 
             if ($user) {
-                $this->userDiscriminator->setClass($class);
-
                 return $user;
+            }
+        } else {
+            $classes = $discriminatorr->getClasses();
+
+            foreach ($classes as $class) {
+                $repo = $this->om->getRepository($class);
+
+                if (!$repo) {
+                    throw new \LogicException(sprintf('Repository "%s" not found', $class));
+                }
+
+                // Some models does not have the property associated to the criteria
+                try {
+                    $user = $repo->findOneBy($criteria);
+                } catch (ORMException $e) {
+                    $user = null;
+                }
+
+                if ($user) {
+                    $this->userDiscriminator->setClass($class);
+
+                    return $user;
+                }
             }
         }
 
