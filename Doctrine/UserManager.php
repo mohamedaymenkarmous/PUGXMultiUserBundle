@@ -67,7 +67,7 @@ class UserManager extends BaseUserManager
     {
         $discriminator = $this->userDiscriminator;
         // If the discriminator class is set
-        if($discriminator->getClass()) {
+        if($discriminator->getRealClass()) {
             $class=$discriminator->getClass();
             $repo = $this->om->getRepository($class);
 
@@ -86,7 +86,7 @@ class UserManager extends BaseUserManager
                 return $user;
             }
         } else {
-            $classes = $discriminatorr->getClasses();
+            $classes = $discriminator->getClasses();
 
             foreach ($classes as $class) {
                 $repo = $this->om->getRepository($class);
