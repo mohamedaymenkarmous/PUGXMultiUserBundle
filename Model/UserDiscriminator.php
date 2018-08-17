@@ -88,6 +88,24 @@ class UserDiscriminator
     /**
      * @return string
      */
+    public function getRealClass()
+    {
+        if (!is_null($this->class)) {
+            return $this->class;
+        }
+
+        $storedClass = $this->session->get(static::SESSION_NAME, null);
+
+        if ($storedClass) {
+            $this->class = $storedClass;
+        }
+
+        return $this->class;
+    }
+
+    /**
+     * @return string
+     */
     public function getClass()
     {
         if (!is_null($this->class)) {
