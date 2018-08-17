@@ -66,7 +66,7 @@ class UserManager extends BaseUserManager
     public function findUserBy(array $criteria)
     {
         $discriminator = $this->userDiscriminator;
-        # If the discriminator class is set
+        // If the discriminator class is set
         if($discriminator->getClass()) {
             $class=$discriminator->getClass();
             $repo = $this->om->getRepository($class);
